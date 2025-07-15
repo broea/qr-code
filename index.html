@@ -9,11 +9,15 @@
       --text-color: #000000;
       --accent: #ff0000;
       --accent-glow: 0 0 10px #ff000080;
+      --input-bg: #ffffff;
+      --input-text: #000000;
     }
 
     body.dark-mode {
       --bg-color: #121212;
       --text-color: #f0f0f0;
+      --input-bg: #1e1e1e;
+      --input-text: #f0f0f0;
     }
 
     body {
@@ -59,8 +63,8 @@
 
     input[type="file"] {
       padding: 10px;
-      background: #1e1e1e;
-      color: var(--text-color);
+      background: var(--input-bg);
+      color: var(--input-text);
       border: 1px solid var(--accent);
       border-radius: 6px;
       margin: 10px;
@@ -120,7 +124,7 @@
   <canvas id="canvas" hidden></canvas>
   <img id="preview" alt="Preview da imagem"/>
   <div id="output"></div>
-  <footer>&copy; 2025 Todos os direitos reservados para Eduardo Salaib.</footer>
+  <footer>&copy; 2025 Todos os direitos reservados para Raknoo.</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
   <script>
