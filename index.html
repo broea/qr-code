@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Leitor de QR Code por Imagem</title>
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --accent: #ff0000;
+      --accent-glow: 0 0 10px #ff000080;
+    }
+
+    body.dark-mode {
+      --bg-color: #121212;
+      --text-color: #f0f0f0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    h2 {
+      color: var(--accent);
+      text-shadow: var(--accent-glow);
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .icon-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .icon-button {
+      background: var(--bg-color);
+      border: 1px solid var(--accent);
+      font-size: 22px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--accent);
+      box-shadow: var(--accent-glow);
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      background: #1e1e1e;
+      color: var(--text-color);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      margin: 10px;
+      cursor: pointer;
+    }
+
+    #paste-info {
+      font-size: 14px;
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+
+    img {
+      max-width: 300px;
+      display: block;
+      margin: 10px auto;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      box-shadow: var(--accent-glow);
+    }
+
+    #output {
+      margin-top: 20px;
+      font-size: 18px;
+      color: var(--text-color);
+      max-width: 600px;
+      word-break: break-word;
+    }
+
+    #copy-btn {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: var(--accent-glow);
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #999;
+    }
+  </style>
+</head>
+<body class="dark-mode" oncontextmenu="return false">
+  <div class="icon-container">
+    <button id="toggle-theme" class="icon-button" title="Alternar tema">🌙</button>
+    <button class="icon-button" onclick="location.reload()" title="Atualizar página">🔄</button>
+  </div>
+  <h2>Leitor de QR Code por Imagem</h2>
+  <input type="file" accept="image/*" id="file-input">
+  <div id="paste-info">Ou cole uma imagem diretamente na página (Ctrl+V)</div>
+  <canvas id="canvas" hidden></canvas>
+  <img id="preview" alt="Preview da imagem"/>
+  <div id="output"></div>
+  <footer>&copy; 2025 Todos os direitos reservados para Raknoo.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+  <script>
+    const fileInput = document.getElementById('file-input');
+    const output = document.getElementById('output');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const preview = document.getElementById('preview');
+    const toggleTheme = document.getElementById('toggle-theme');
+
+    function processImage(img) {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      preview.src = img.src;
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+      if (code) {
+        output.innerHTML = `<strong style='color: var(--accent);'>QR Code detectado:</strong><br><div id='qr-text'>${code.data}</div><button id='copy-btn'>Copiar</button>`;
+        document.getElementById('copy-btn').onclick = () => {
+          navigator.clipboard.writeText(code.data);
+        };
+      } else {
+        output.textContent = 'Nenhum QR Code detectado.';
+      }
+    }
+
+    fileInput.addEventListener('change', event => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = () => processImage(img);
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.addEventListener('paste', event => {
+      const items = event.clipboardData.items;
+      for (let item of items) {
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const img = new Image();
+            img.onload = () => processImage(img);
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    });
+
+    toggleTheme.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      toggleTheme.textContent = document.body.classList.contains('dark-mode') ? '🌙' : '☀️';
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+        (e.ctrlKey && e.key === 'U')
+      ) {
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
