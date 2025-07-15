@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Leitor de QR Code por Imagem</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2891/2891449.png">
   <style>
     :root {
       --bg-color: #ffffff;
@@ -11,6 +12,7 @@
       --accent-glow: 0 0 10px #ff000080;
       --input-bg: #ffffff;
       --input-text: #000000;
+      --bg-image: url('https://cdn-icons-png.flaticon.com/512/865/865860.png'); /* dente fundo claro */
     }
 
     body.dark-mode {
@@ -18,11 +20,13 @@
       --text-color: #f0f0f0;
       --input-bg: #1e1e1e;
       --input-text: #f0f0f0;
+      --bg-image: url('https://cdn-icons-png.flaticon.com/512/625/625125.png'); /* dente fundo escuro */
     }
 
     body {
       font-family: Arial, sans-serif;
-      background: var(--bg-color);
+      background: var(--bg-color) center center / 150px repeat fixed,
+                  var(--bg-image) center center / 150px repeat fixed;
       color: var(--text-color);
       display: flex;
       flex-direction: column;
@@ -106,6 +110,14 @@
       box-shadow: var(--accent-glow);
     }
 
+    .decor-icons {
+      margin-top: 30px;
+      font-size: 36px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
     footer {
       margin-top: 40px;
       font-size: 14px;
@@ -124,6 +136,9 @@
   <canvas id="canvas" hidden></canvas>
   <img id="preview" alt="Preview da imagem"/>
   <div id="output"></div>
+  <div class="decor-icons">
+    🦷 🦾 💉
+  </div>
   <footer>&copy; 2025 Todos os direitos reservados para Eduardo Salaib.</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
