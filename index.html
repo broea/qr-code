@@ -45,6 +45,7 @@
       opacity: 0.08;
       animation: float 30s linear infinite;
       pointer-events: none;
+      color: var(--text-color);
     }
 
     @keyframes float {
@@ -101,6 +102,7 @@
       display: inline-block;
       position: relative;
       cursor: help;
+      z-index: 2;
     }
 
     #paste-info::after {
@@ -162,27 +164,36 @@
       color: #999;
       z-index: 1;
     }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body class="dark-mode" oncontextmenu="return false">
-  <!-- Floating Icons -->
+  <!-- Ícones flutuantes -->
   <div class="floating-icon" style="left:10%; animation-delay: 0s;">🦷</div>
   <div class="floating-icon" style="left:30%; animation-delay: 10s;">💉</div>
   <div class="floating-icon" style="left:50%; animation-delay: 5s;">🦾</div>
   <div class="floating-icon" style="left:70%; animation-delay: 15s;">🦷</div>
   <div class="floating-icon" style="left:90%; animation-delay: 2s;">💉</div>
 
+  <!-- Controles de tema e atualização -->
   <div class="icon-container">
     <button id="toggle-theme" class="icon-button" title="Alternar tema">🌙</button>
     <button class="icon-button" onclick="location.reload()" title="Atualizar página">🔄</button>
   </div>
+
+  <!-- Conteúdo principal -->
   <h2>Leitor de QR Code por Imagem</h2>
   <input type="file" accept="image/*" id="file-input">
   <div id="paste-info">📋 Ou cole uma imagem diretamente na página (Ctrl+V)</div>
   <canvas id="canvas" hidden></canvas>
   <img id="preview" alt="Preview da imagem"/>
   <div id="output"></div>
-  <footer>&copy; 2025 Todos os direitos reservados para Eduardo Salaib.</footer>
+
+  <footer>&copy; 2025 Todos os direitos reservados para Eduardo.</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
   <script>
