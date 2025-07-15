@@ -12,6 +12,7 @@
       --accent-glow: 0 0 10px #ff000080;
       --input-bg: #ffffff;
       --input-text: #000000;
+      --info-text: #666666;
     }
 
     body.dark-mode {
@@ -19,6 +20,7 @@
       --text-color: #f0f0f0;
       --input-bg: #1e1e1e;
       --input-text: #f0f0f0;
+      --info-text: #cccccc;
     }
 
     body {
@@ -90,8 +92,39 @@
 
     #paste-info {
       font-size: 14px;
-      color: #ccc;
+      color: var(--info-text);
       margin-bottom: 20px;
+      transition: color 0.3s;
+      font-style: italic;
+      text-decoration: underline dotted;
+      animation: fadeIn 2s ease-in-out;
+      display: inline-block;
+      position: relative;
+      cursor: help;
+    }
+
+    #paste-info::after {
+      content: "Você também pode usar Ctrl+V para colar a imagem diretamente.";
+      position: absolute;
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-color);
+      color: var(--text-color);
+      border: 1px solid var(--accent);
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+
+    #paste-info:hover::after {
+      opacity: 1;
     }
 
     img {
@@ -145,11 +178,11 @@
   </div>
   <h2>Leitor de QR Code por Imagem</h2>
   <input type="file" accept="image/*" id="file-input">
-  <div id="paste-info">Ou cole uma imagem diretamente na página (Ctrl+V)</div>
+  <div id="paste-info">📋 Ou cole uma imagem diretamente na página (Ctrl+V)</div>
   <canvas id="canvas" hidden></canvas>
   <img id="preview" alt="Preview da imagem"/>
   <div id="output"></div>
-  <footer>&copy; 2025 Todos os direitos reservados para Eduardo Salaib.</footer>
+  <footer>&copy; 2025 Todos os direitos reservados para Raknoo.</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
   <script>
