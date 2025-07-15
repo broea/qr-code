@@ -30,13 +30,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: start;
       min-height: 100vh;
       margin: 0;
       padding: 20px;
       text-align: center;
       transition: background 0.3s, color 0.3s;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: relative;
     }
 
     .floating-icon {
@@ -129,25 +131,17 @@
       opacity: 1;
     }
 
-    img {
-      max-width: 300px;
-      display: block;
-      margin: 10px auto;
-      border: 1px solid var(--accent);
-      border-radius: 8px;
-      box-shadow: var(--accent-glow);
-    }
-
     #output {
       margin-top: 20px;
       font-size: 18px;
       color: var(--text-color);
       max-width: 600px;
       word-break: break-word;
+      position: relative;
     }
 
     #copy-btn {
-      margin-top: 10px;
+      margin-bottom: 10px;
       padding: 8px 16px;
       background: var(--accent);
       color: #000;
@@ -156,6 +150,28 @@
       cursor: pointer;
       font-weight: bold;
       box-shadow: var(--accent-glow);
+      position: relative;
+      z-index: 1;
+    }
+
+    #copy-notice {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    #copy-notice.visible {
+      opacity: 1;
     }
 
     footer {
@@ -164,36 +180,27 @@
       color: #999;
       z-index: 1;
     }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(10px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
   </style>
 </head>
 <body class="dark-mode" oncontextmenu="return false">
-  <!-- Ícones flutuantes -->
   <div class="floating-icon" style="left:10%; animation-delay: 0s;">🦷</div>
   <div class="floating-icon" style="left:30%; animation-delay: 10s;">💉</div>
   <div class="floating-icon" style="left:50%; animation-delay: 5s;">🦾</div>
   <div class="floating-icon" style="left:70%; animation-delay: 15s;">🦷</div>
   <div class="floating-icon" style="left:90%; animation-delay: 2s;">💉</div>
 
-  <!-- Controles de tema e atualização -->
   <div class="icon-container">
     <button id="toggle-theme" class="icon-button" title="Alternar tema">🌙</button>
     <button class="icon-button" onclick="location.reload()" title="Atualizar página">🔄</button>
   </div>
 
-  <!-- Conteúdo principal -->
   <h2>Leitor de QR Code por Imagem</h2>
   <input type="file" accept="image/*" id="file-input">
   <div id="paste-info">📋 Ou cole uma imagem diretamente na página (Ctrl+V)</div>
   <canvas id="canvas" hidden></canvas>
   <img id="preview" alt="Preview da imagem"/>
   <div id="output"></div>
-
-  <footer>&copy; 2025 Todos os direitos reservados para Eduardo Salaib.</footer>
+  <footer>&copy; 2025 Todos os direitos reservados para Raknoo.</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
   <script>
@@ -214,9 +221,24 @@
       const code = jsQR(imageData.data, imageData.width, imageData.height);
 
       if (code) {
-        output.innerHTML = `<strong style='color: var(--accent);'>QR Code detectado:</strong><br><div id='qr-text'>${code.data}</div><button id='copy-btn'>Copiar</button>`;
-        document.getElementById('copy-btn').onclick = () => {
-          navigator.clipboard.writeText(code.data);
+        output.innerHTML = `
+          <div style="position: relative;">
+            <button id='copy-btn'>Copiar</button>
+            <div id="copy-notice">Código copiado!</div>
+          </div>
+          <div id='qr-text'>${code.data}</div>
+        `;
+
+        const copyBtn = document.getElementById('copy-btn');
+        const copyNotice = document.getElementById('copy-notice');
+
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(code.data).then(() => {
+            copyNotice.classList.add('visible');
+            setTimeout(() => {
+              copyNotice.classList.remove('visible');
+            }, 2000);
+          });
         };
       } else {
         output.textContent = 'Nenhum QR Code detectado.';
@@ -226,7 +248,6 @@
     fileInput.addEventListener('change', event => {
       const file = event.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function(e) {
         const img = new Image();
