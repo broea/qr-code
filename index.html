@@ -12,7 +12,6 @@
       --accent-glow: 0 0 10px #ff000080;
       --input-bg: #ffffff;
       --input-text: #000000;
-      --bg-image: url('https://cdn-icons-png.flaticon.com/512/865/865860.png'); /* dente fundo claro */
     }
 
     body.dark-mode {
@@ -20,13 +19,11 @@
       --text-color: #f0f0f0;
       --input-bg: #1e1e1e;
       --input-text: #f0f0f0;
-      --bg-image: url('https://cdn-icons-png.flaticon.com/512/625/625125.png'); /* dente fundo escuro */
     }
 
     body {
       font-family: Arial, sans-serif;
-      background: var(--bg-color) center center / 150px repeat fixed,
-                  var(--bg-image) center center / 150px repeat fixed;
+      background-color: var(--bg-color);
       color: var(--text-color);
       display: flex;
       flex-direction: column;
@@ -37,6 +34,20 @@
       padding: 20px;
       text-align: center;
       transition: background 0.3s, color 0.3s;
+      overflow: hidden;
+    }
+
+    .floating-icon {
+      position: absolute;
+      font-size: 40px;
+      opacity: 0.08;
+      animation: float 30s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); }
+      100% { transform: translateY(-100vh) rotate(360deg); }
     }
 
     h2 {
@@ -52,6 +63,7 @@
       right: 20px;
       display: flex;
       gap: 10px;
+      z-index: 10;
     }
 
     .icon-button {
@@ -73,6 +85,7 @@
       border-radius: 6px;
       margin: 10px;
       cursor: pointer;
+      z-index: 1;
     }
 
     #paste-info {
@@ -110,22 +123,22 @@
       box-shadow: var(--accent-glow);
     }
 
-    .decor-icons {
-      margin-top: 30px;
-      font-size: 36px;
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-    }
-
     footer {
       margin-top: 40px;
       font-size: 14px;
       color: #999;
+      z-index: 1;
     }
   </style>
 </head>
 <body class="dark-mode" oncontextmenu="return false">
+  <!-- Floating Icons -->
+  <div class="floating-icon" style="left:10%; animation-delay: 0s;">🦷</div>
+  <div class="floating-icon" style="left:30%; animation-delay: 10s;">💉</div>
+  <div class="floating-icon" style="left:50%; animation-delay: 5s;">🦾</div>
+  <div class="floating-icon" style="left:70%; animation-delay: 15s;">🦷</div>
+  <div class="floating-icon" style="left:90%; animation-delay: 2s;">💉</div>
+
   <div class="icon-container">
     <button id="toggle-theme" class="icon-button" title="Alternar tema">🌙</button>
     <button class="icon-button" onclick="location.reload()" title="Atualizar página">🔄</button>
@@ -136,9 +149,6 @@
   <canvas id="canvas" hidden></canvas>
   <img id="preview" alt="Preview da imagem"/>
   <div id="output"></div>
-  <div class="decor-icons">
-    🦷 🦾 💉
-  </div>
   <footer>&copy; 2025 Todos os direitos reservados para Eduardo Salaib.</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
